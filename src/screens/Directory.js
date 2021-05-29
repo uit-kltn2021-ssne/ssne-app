@@ -28,10 +28,10 @@ export default ({ navigation }) => {
   return (
     <>
       <View style={styles.container}>
-        <SearchBar
+        {/* <SearchBar
           placeholder="Tìm kiếm đồng nghiệp..."
           style={styles.searchBar}
-        />
+        /> */}
         <_Employees
           onItemPress={(id) =>
             navigation.push("EmployeeInformation", {

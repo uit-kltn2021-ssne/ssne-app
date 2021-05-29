@@ -1,9 +1,10 @@
 import { Dialogflow_V2 } from "react-native-dialogflow";
 import { View, StyleSheet } from "react-native";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { GiftedChat, Send } from "react-native-gifted-chat";
 import locale from "dayjs/locale/vi";
 import { ChatbotContext } from "../store";
+import { ActivityIndicator } from "react-native";
 
 export default ChatbotView = () => {
   const privateKey = `-----BEGIN PRIVATE KEY-----
@@ -41,6 +42,7 @@ export default ChatbotView = () => {
   const projectId = "employee-support-system";
 
   const [messages, setMessages] = useContext(ChatbotContext);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Dialogflow_V2.setConfiguration(
@@ -49,6 +51,7 @@ export default ChatbotView = () => {
       language,
       projectId
     );
+    setLoading(false);
   }, []);
 
   const BOT_USER = {
@@ -96,6 +99,14 @@ export default ChatbotView = () => {
       flex: 1,
     },
   });
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center" }}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

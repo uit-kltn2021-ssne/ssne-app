@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useQuery, gql } from "@apollo/client";
 import Markdown from "react-native-markdown-display";
 import {
@@ -8,7 +8,8 @@ import {
   ScrollView,
   StyleSheet,
 } from "react-native";
-import { Button } from "react-native";
+import { Button } from "react-native-elements";
+import { MaterialCommunityIcons as Icon } from "@expo/vector-icons";
 
 const GET_ARTICLE_QUERY = gql`
   query GetArticle($uid: ID!) {
@@ -28,6 +29,12 @@ export default ({ route, navigation }) => {
   const { loading, error, data } = useQuery(GET_ARTICLE_QUERY, {
     variables: { uid: itemId },
   });
+
+  useEffect(() => {
+    if (data && data.article) {
+      navigation.setOptions({ title: data.article.title });
+    }
+  }, [data])
 
   if (loading) {
     return (
@@ -62,8 +69,13 @@ export default ({ route, navigation }) => {
         <Markdown style={styles}>{data.article.content}</Markdown>
       </ScrollView>
       <View style={{ position: "absolute", bottom: 10, zIndex: 10, alignSelf: "center", flexDirection: "row" }}>
-        <Button title="+" onPress={() => setTextFontSize(textFontSize + 2)} />
-        <Button title="-" onPress={() => setTextFontSize(textFontSize - 2)} />
+        <Button onPress={() => setTextFontSize(textFontSize + 2)}
+          containerStyle={{ marginHorizontal: 5 }}
+          icon={<Icon name="plus" size={20} color="white" />}
+        />
+        <Button onPress={() => setTextFontSize(textFontSize - 2)}
+          containerStyle={{ marginHorizontal: 5 }}
+          icon={<Icon name="minus" size={20} color="white" />} />
       </View>
 
     </View>

@@ -4,31 +4,25 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TouchableHighlightComponent,
-  TouchableOpacity,
-  Button,
 } from "react-native";
-import { Screen } from "react-native-screens";
-import { Avatar } from "react-native-elements";
-import { FlatList, Dimensions } from "react-native";
-import { MaterialIcons as Mi } from "@expo/vector-icons";
+import { Dimensions } from "react-native";
 import Student from "../components/Svg/Student";
 import Pattern from "../components/Svg/Pattern";
-import SearchBar from "../components/SearchBar";
-import { useQuery, gql } from "@apollo/client";
-import { ActivityIndicator } from "react-native";
+import { useQuery, gql, useMutation } from "@apollo/client";
 import { ListItem } from "react-native-elements";
+import { RefreshControl } from "react-native";
 
-const { width, height } = Dimensions.get("window");
-
-const _calcDimensions = (width, numColumns, margin) => {
-  return (width - numColumns * margin) / numColumns;
-};
+const { height } = Dimensions.get("window");
 
 export default ({ navigation }) => {
-  const _size = _calcDimensions(width - 20 * 2, 3, 20);
+  const queryResult = useQuery(GET_CHECKLIST_QUERY);
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={styles.container} refreshControl={
+      <RefreshControl
+        refreshing={queryResult.loading}
+        onRefresh={queryResult.refetch}
+      />
+    }>
       <View
         style={{
           backgroundColor: "#F18C8E",
@@ -61,7 +55,7 @@ export default ({ navigation }) => {
 
       {/* Article Section */}
       <View style={{ paddingHorizontal: 15, marginTop: -30 }}>
-        <CheckList navigation={navigation} />
+        <CheckList navigation={navigation} queryResult={queryResult} />
       </View>
     </ScrollView>
   );
@@ -69,12 +63,8 @@ export default ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    //flex: 1,
-    //justifyContent: "center",
-    //alignItems: "center",
     backgroundColor: "#F9F9F9",
     flexGrow: 1
-    //position: "relative",
   },
 });
 
@@ -90,25 +80,40 @@ const GET_CHECKLIST_QUERY = gql`
   }
 `;
 
-const CheckList = ({ navigation }) => {
-  const { loading, error, data } = useQuery(GET_CHECKLIST_QUERY);
+const COMPLETE_CHECKLIST_ITEM_MUTATION = gql`
+  mutation CompleteCheckListItemMutation($uid: ID!, $checked: Boolean) {
+    updateChecklistItem(
+      input: {
+        where: { id: $uid }
+        data: { status: $checked }
+      }
+    ) {
+      checklistItem {
+        id
+        title
+        description
+        status
+        tag
+      }
+    }
+  }
+`;
+
+const CheckList = ({ navigation, queryResult }) => {
+
+  const [completeChecklistItem, { }] = useMutation(COMPLETE_CHECKLIST_ITEM_MUTATION);
+
+  const { loading, data, error } = queryResult;
+
   if (loading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center" }}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </View>
-    );
+    return null;
   }
 
   if (error) return <Text>{error}</Text>;
 
   return data.checklistItems.map(({ id, title, status }) => (
     <ListItem
-      // onPress={() =>
-      //   navigation.push("ArticleDetails", {
-      //     itemId: id,
-      //   })
-      // }
+      onPress={() => completeChecklistItem({ variables: { uid: id, checked: !status } })}
       key={id}
       style={{
         borderColor: "#eeeeee",
@@ -118,9 +123,9 @@ const CheckList = ({ navigation }) => {
       }}
       containerStyle={{ backgroundColor: "#FFF" }}
     >
-      <ListItem.CheckBox checked={status} />
+      <ListItem.CheckBox checked={status} onPress={() => completeChecklistItem({ variables: { uid: id, checked: !status } })} />
       <ListItem.Content>
-        <ListItem.Title>{title}</ListItem.Title>
+        <ListItem.Title style={{ color: status ? "#888" : "#000" }}>{title}</ListItem.Title>
       </ListItem.Content>
 
     </ListItem>

@@ -13,6 +13,7 @@ import ChatbotView from '../screens/ChatbotView';
 const Tab = createBottomTabNavigator();
 const DirectoryStack = createStackNavigator();
 const ArticleStack = createStackNavigator();
+const ChatbotStack = createStackNavigator();
 
 export default () => {
   return (
@@ -55,7 +56,7 @@ export default () => {
       />
       <Tab.Screen
         name="Chatbot"
-        component={ChatbotView} />
+        component={chatbotDirectoryStackComponent} />
     </Tab.Navigator>
 
   );
@@ -68,13 +69,20 @@ function articleStackComponent() {
         elevation: 0,
       }
     }} />
-    <DirectoryStack.Screen name="ArticleDetails" component={ArticleDetails} />
+    <DirectoryStack.Screen name="ArticleDetails" component={ArticleDetails}
+      options={{
+        title: null
+      }} />
   </ArticleStack.Navigator>);
 }
 
 function directoryStackComponent() {
   return (<DirectoryStack.Navigator>
-    <DirectoryStack.Screen name="Directory" component={Directory} />
+    <DirectoryStack.Screen name="Directory" component={Directory} options={{
+      headerStyle: {
+        elevation: 0,
+      }
+    }} />
     <DirectoryStack.Screen
       name="EmployeeInformation"
       component={EmployeeInformation}
@@ -87,4 +95,16 @@ function directoryStackComponent() {
       }}
     />
   </DirectoryStack.Navigator>);
+}
+
+function chatbotDirectoryStackComponent() {
+  return (<ChatbotStack.Navigator>
+    <ChatbotStack.Screen name="Chatbot" component={ChatbotView} options={{
+      headerStyle: {
+        elevation: 0,
+        borderBottomColor: "#ddd",
+        borderBottomWidth: 0.5
+      }
+    }} />
+  </ChatbotStack.Navigator>);
 }

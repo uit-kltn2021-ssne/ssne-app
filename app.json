@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "SSNEApp",
-    "slug": "SSNEApp",
+    "slug": "ssne-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -27,6 +27,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "",
+    "sdkVersion": "41.0.0"
   }
 }

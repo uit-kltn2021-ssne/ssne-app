@@ -9,13 +9,38 @@ import { createStackNavigator } from "@react-navigation/stack";
 import EmployeeInformation from '../screens/EmployeeInformation';
 import ArticleDetails from '../screens/ArticleDetails';
 import ChatbotView from '../screens/ChatbotView';
+import FirstScreen from '../screens/FirstScreen';
+import Login from '../screens/Login';
 
+const GlobalStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 const DirectoryStack = createStackNavigator();
 const ArticleStack = createStackNavigator();
 const ChatbotStack = createStackNavigator();
 
 export default () => {
+  return (
+    <GlobalStack.Navigator>
+      <GlobalStack.Screen
+        name="FirstScreen"
+        component={FirstScreen} 
+      />
+      <GlobalStack.Screen
+        name="Login"
+        component={Login} 
+      />
+      <GlobalStack.Screen
+        name="TabNavigator"
+        options={{
+          headerShown: false,
+        }}
+        component={tabComponent}
+      />
+    </GlobalStack.Navigator>
+  );
+}
+
+function tabComponent() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -58,8 +83,7 @@ export default () => {
         name="Chatbot"
         component={chatbotDirectoryStackComponent} />
     </Tab.Navigator>
-
-  );
+  )
 }
 
 function articleStackComponent() {

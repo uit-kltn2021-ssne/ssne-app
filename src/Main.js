@@ -5,7 +5,7 @@ import { ThemeProvider } from "react-native-elements";
 import Screens from "./navigation/Screens";
 // Before rendering any navigation stack
 import { enableScreens } from "react-native-screens";
-import { ChatbotContext } from "./store";
+import { ChatbotContext, JwtContext } from "./store";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import Tabs from "./navigation/Tabs";
 
@@ -18,16 +18,19 @@ const apolloClient = new ApolloClient({
 
 const Main = () => {
   const chatbotState = useState([]);
+  const jwtState = useState();
 
   return (
     <ApolloProvider client={apolloClient}>
-      <ChatbotContext.Provider value={chatbotState}>
-        <NavigationContainer>
-          <ThemeProvider>
-            <Tabs />
-          </ThemeProvider>
-        </NavigationContainer>
-      </ChatbotContext.Provider>
+      <JwtContext.Provider value={jwtState}>
+        <ChatbotContext.Provider value={chatbotState}>
+          <NavigationContainer>
+            <ThemeProvider>
+              <Tabs />
+            </ThemeProvider>
+          </NavigationContainer>
+        </ChatbotContext.Provider>
+      </JwtContext.Provider>
     </ApolloProvider>
   );
 };

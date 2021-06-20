@@ -54,7 +54,10 @@ const _Employees = ({ onItemPress }) => {
       </View>
     );
 
-  if (error) return <Text>Error...</Text>;
+  if (error) {
+    console.log(error);
+    return <Text>{error.message}</Text>;
+  }
 
   return data.employees.map(({ id, name, email, avatar }) => (
     <ListItem

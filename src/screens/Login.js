@@ -5,6 +5,7 @@ import { gql, useMutation } from "@apollo/client";
 import { Text } from 'react-native';
 import { JwtContext } from '../store';
 import { ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LOGIN_MUTATION = gql`
   mutation Login($identifier: String!, $password: String!) {
@@ -25,14 +26,22 @@ export default ({ navigation }) => {
     const passwordRef = useRef();
 
     const [loginRequest, { loading }] = useMutation(LOGIN_MUTATION, {
-        onCompleted: (data) => {
-            if (data && data.login && data.login.jwt) {
-                setJwt(data.login.jwt)
-                console.log(200)
+        context: {
+            headers: {
+                authorization: ""
             }
         },
-        onError: (error) => {
+        onCompleted: async (data) => {
+            if (data && data.login && data.login.jwt) {
+                setJwt(data.login.jwt);
+                await AsyncStorage.setItem("token", data.login.jwt);
+                console.log(200)
+                navigation.navigate("TabNavigator");
+            }
+        },
+        onError: async (error) => {
             setJwt(undefined);
+            await AsyncStorage.removeItem("token");
             passwordRef.current.clear();
             setPassword("");
             alert(error);
@@ -66,8 +75,6 @@ export default ({ navigation }) => {
                 }}
             />
             <Button disabled={loading} title="Login" onPress={(e) => {
-                e.preventDefault();
-
                 if (email && password) {
                     console.log(email);
                     console.log(password);

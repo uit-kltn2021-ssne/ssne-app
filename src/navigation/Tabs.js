@@ -18,16 +18,17 @@ const DirectoryStack = createStackNavigator();
 const ArticleStack = createStackNavigator();
 const ChatbotStack = createStackNavigator();
 
-export default () => {
+export default ({ authenticated }) => {
+  console.log("â" + authenticated);
   return (
-    <GlobalStack.Navigator>
+    <GlobalStack.Navigator initialRouteName={authenticated ? "TabNavigator" : "FirstScreen"}>
       <GlobalStack.Screen
         name="FirstScreen"
-        component={FirstScreen} 
+        component={FirstScreen}
       />
       <GlobalStack.Screen
         name="Login"
-        component={Login} 
+        component={Login}
       />
       <GlobalStack.Screen
         name="TabNavigator"

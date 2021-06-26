@@ -3,7 +3,7 @@ import { StyleSheet, View } from 'react-native';
 import { Button, Input } from 'react-native-elements';
 import { gql, useMutation } from "@apollo/client";
 import { Text } from 'react-native';
-import { JwtContext } from '../store';
+import { User3Context } from '../store';
 import { ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -11,13 +11,26 @@ const LOGIN_MUTATION = gql`
   mutation Login($identifier: String!, $password: String!) {
     login(input: { identifier: $identifier, password: $password }) {
         jwt
+        user {
+            id
+            username
+            email
+            confirmed
+            blocked
+            role {
+                id
+                name
+                description
+                type
+            }
+        }
     }
   }
 `;
 
 export default ({ navigation }) => {
 
-    const [jwt, setJwt] = useContext(JwtContext);
+    const [user, setUser] = useContext(User3Context);
 
     const [email, setEmail] = useState("test.user@ssne.xyz");
     const [password, setPassword] = useState("testuser");
@@ -33,15 +46,15 @@ export default ({ navigation }) => {
         },
         onCompleted: async (data) => {
             if (data && data.login && data.login.jwt) {
-                setJwt(data.login.jwt);
-                await AsyncStorage.setItem("token", data.login.jwt);
+                setUser(data.login);
+                await AsyncStorage.setItem("user", JSON.stringify(data.login));
                 console.log(200)
                 navigation.navigate("TabNavigator");
             }
         },
         onError: async (error) => {
-            setJwt(undefined);
-            await AsyncStorage.removeItem("token");
+            setUser(undefined);
+            await AsyncStorage.removeItem("user");
             passwordRef.current.clear();
             setPassword("");
             alert(error);

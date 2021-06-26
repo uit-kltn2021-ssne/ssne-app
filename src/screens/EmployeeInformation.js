@@ -18,8 +18,20 @@ const EMPLOYEE_INFORMATION = gql`
       id
       name
       email
+      phoneNumber
+      skypeId
+      employeeId
+      facebook
+      introduction
+      position
       avatar {
         url
+      }
+      user {
+        id
+      }
+      department {
+        name
       }
     }
   }
@@ -37,7 +49,22 @@ export default ({ route, navigation }) => {
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
+
   if (error) return <Text>{error}</Text>;
+
+  const {
+    name,
+    email,
+    avatar,
+    skypeId,
+    employeeId,
+    facebook,
+    introduction,
+    department,
+    position,
+    phoneNumber,
+  } = data.employee;
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.avatarSection}>
@@ -80,24 +107,107 @@ export default ({ route, navigation }) => {
               }}
             >
               <ListItem.Title style={{ fontWeight: "bold" }}>
+                Mã số
+              </ListItem.Title>
+              <ListItem.Title>{employeeId}</ListItem.Title>
+            </ListItem.Content>
+          </ListItem>
+          <ListItem style={styles.infoItem}>
+            <ListItem.Content
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <ListItem.Title style={{ fontWeight: "bold" }}>
                 Phòng ban
               </ListItem.Title>
-              <ListItem.Title>PhongIT</ListItem.Title>
+              <ListItem.Title>{department.name}</ListItem.Title>
             </ListItem.Content>
           </ListItem>
           <ListItem style={styles.infoItem}>
-            <ListItem.Content>
-              <ListItem.Title>Hello</ListItem.Title>
+            <ListItem.Content
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <ListItem.Title style={{ fontWeight: "bold" }}>
+                Vị trí
+              </ListItem.Title>
+              <ListItem.Title>{position}</ListItem.Title>
             </ListItem.Content>
           </ListItem>
           <ListItem style={styles.infoItem}>
-            <ListItem.Content>
-              <ListItem.Title>Hello</ListItem.Title>
+            <ListItem.Content
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <ListItem.Title style={{ fontWeight: "bold" }}>
+                Số điện thoại
+              </ListItem.Title>
+              <ListItem.Title>{phoneNumber}</ListItem.Title>
             </ListItem.Content>
           </ListItem>
           <ListItem style={styles.infoItem}>
+            <ListItem.Content
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <ListItem.Title style={{ fontWeight: "bold" }}>
+                Email
+              </ListItem.Title>
+              <ListItem.Title>{email}</ListItem.Title>
+            </ListItem.Content>
+          </ListItem>
+          <ListItem style={styles.infoItem}>
+            <ListItem.Content
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <ListItem.Title style={{ fontWeight: "bold" }}>
+                Skype
+              </ListItem.Title>
+              <ListItem.Title>{skypeId}</ListItem.Title>
+            </ListItem.Content>
+          </ListItem>
+          <ListItem style={styles.infoItem}>
+            <ListItem.Content
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
+              <ListItem.Title style={{ fontWeight: "bold" }}>
+                Facebook
+              </ListItem.Title>
+              <ListItem.Title>{facebook}</ListItem.Title>
+            </ListItem.Content>
+          </ListItem>
+        </Card>
+      </View>
+      <View style={styles.infoSection}>
+        <Text style={{ fontSize: 18, fontWeight: "bold", color: "#666" }}>
+          Giới thiệu
+        </Text>
+        <Card
+          containerStyle={{
+            borderRadius: 10,
+            padding: 0,
+            marginHorizontal: 0,
+            overflow: "hidden",
+          }}
+          wrapperStyle={{ borderRadius: 10 }}
+        >
+          <ListItem style={styles.infoItem}>
             <ListItem.Content>
-              <ListItem.Title>Hello</ListItem.Title>
+              <ListItem.Title>{introduction}</ListItem.Title>
             </ListItem.Content>
           </ListItem>
         </Card>

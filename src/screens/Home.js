@@ -1,10 +1,5 @@
 import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { Dimensions } from "react-native";
 import Student from "../components/Svg/Student";
 import Pattern from "../components/Svg/Pattern";
@@ -17,12 +12,15 @@ const { height } = Dimensions.get("window");
 export default ({ navigation }) => {
   const queryResult = useQuery(GET_CHECKLIST_QUERY);
   return (
-    <ScrollView contentContainerStyle={styles.container} refreshControl={
-      <RefreshControl
-        refreshing={queryResult.loading}
-        onRefresh={queryResult.refetch}
-      />
-    }>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      refreshControl={
+        <RefreshControl
+          refreshing={queryResult.loading}
+          onRefresh={queryResult.refetch}
+        />
+      }
+    >
       <View
         style={{
           backgroundColor: "#F18C8E",
@@ -64,7 +62,7 @@ export default ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#F9F9F9",
-    flexGrow: 1
+    flexGrow: 1,
   },
 });
 
@@ -83,10 +81,7 @@ const GET_CHECKLIST_QUERY = gql`
 const COMPLETE_CHECKLIST_ITEM_MUTATION = gql`
   mutation CompleteCheckListItemMutation($uid: ID!, $checked: Boolean) {
     updateChecklistItem(
-      input: {
-        where: { id: $uid }
-        data: { status: $checked }
-      }
+      input: { where: { id: $uid }, data: { status: $checked } }
     ) {
       checklistItem {
         id
@@ -100,8 +95,9 @@ const COMPLETE_CHECKLIST_ITEM_MUTATION = gql`
 `;
 
 const CheckList = ({ navigation, queryResult }) => {
-
-  const [completeChecklistItem, { }] = useMutation(COMPLETE_CHECKLIST_ITEM_MUTATION);
+  const [completeChecklistItem, {}] = useMutation(
+    COMPLETE_CHECKLIST_ITEM_MUTATION
+  );
 
   const { loading, data, error } = queryResult;
 
@@ -113,7 +109,9 @@ const CheckList = ({ navigation, queryResult }) => {
 
   return data.checklistItems.map(({ id, title, status }) => (
     <ListItem
-      onPress={() => completeChecklistItem({ variables: { uid: id, checked: !status } })}
+      onPress={() =>
+        completeChecklistItem({ variables: { uid: id, checked: !status } })
+      }
       key={id}
       style={{
         borderColor: "#eeeeee",
@@ -123,11 +121,17 @@ const CheckList = ({ navigation, queryResult }) => {
       }}
       containerStyle={{ backgroundColor: "#FFF" }}
     >
-      <ListItem.CheckBox checked={status} onPress={() => completeChecklistItem({ variables: { uid: id, checked: !status } })} />
+      <ListItem.CheckBox
+        checked={status}
+        onPress={() =>
+          completeChecklistItem({ variables: { uid: id, checked: !status } })
+        }
+      />
       <ListItem.Content>
-        <ListItem.Title style={{ color: status ? "#888" : "#000" }}>{title}</ListItem.Title>
+        <ListItem.Title style={{ color: status ? "#888" : "#000" }}>
+          {title}
+        </ListItem.Title>
       </ListItem.Content>
-
     </ListItem>
   ));
 };

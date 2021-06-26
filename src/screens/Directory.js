@@ -17,6 +17,10 @@ const EMPLOYEES_INFORMATION = gql`
       id
       name
       email
+      employeeId
+      department {
+        name
+      }
       avatar {
         url
       }
@@ -59,23 +63,31 @@ const _Employees = ({ onItemPress }) => {
     return <Text>{error.message}</Text>;
   }
 
-  return data.employees.map(({ id, name, email, avatar }) => (
-    <ListItem
-      key={id}
-      onPress={() => onItemPress(id)}
-      style={{ borderColor: "#eeeeee", borderWidth: 1 }}
-    >
-      <Avatar
-        avatarStyle={{ borderRadius: 30, borderColor: "#ddd", borderWidth: 1 }}
-        containerStyle={{ width: 60, height: 60 }}
-        source={{ uri: getUrl(avatar.url) }}
-      />
-      <ListItem.Content>
-        <ListItem.Title style={styles.listItemTitle}>{name}</ListItem.Title>
-        <ListItem.Subtitle>{email}</ListItem.Subtitle>
-      </ListItem.Content>
-    </ListItem>
-  ));
+  return data.employees.map(
+    ({ id, name, email, avatar, department, employeeId }) => (
+      <ListItem
+        key={id}
+        onPress={() => onItemPress(id)}
+        style={{ borderColor: "#eeeeee", borderWidth: 1 }}
+      >
+        <Avatar
+          avatarStyle={{
+            borderRadius: 30,
+            borderColor: "#ddd",
+            borderWidth: 1,
+          }}
+          containerStyle={{ width: 60, height: 60 }}
+          source={{ uri: getUrl(avatar.url) }}
+        />
+        <ListItem.Content>
+          <ListItem.Title style={styles.listItemTitle}>{name}</ListItem.Title>
+          <ListItem.Subtitle>
+            {employeeId + (department ? " • " + department?.name : "")}
+          </ListItem.Subtitle>
+        </ListItem.Content>
+      </ListItem>
+    )
+  );
 };
 
 const styles = StyleSheet.create({

@@ -5,7 +5,7 @@ import { Button } from 'react-native-elements';
 export default ({ navigation }) => {
     return (
         <View style={styles.container}>
-            <Button title="Login" onPress={(e) => onPress(navigation, e)} />
+            <Button title="Đăng nhập" onPress={(e) => onPress(navigation, e)} />
         </View>
     );
 }

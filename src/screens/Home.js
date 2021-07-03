@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { Dimensions } from "react-native";
 import Student from "../components/Svg/Student";
@@ -6,11 +6,28 @@ import Pattern from "../components/Svg/Pattern";
 import { useQuery, gql, useMutation } from "@apollo/client";
 import { ListItem } from "react-native-elements";
 import { RefreshControl } from "react-native";
+import { User3Context } from "../store";
 
 const { height } = Dimensions.get("window");
 
 export default ({ navigation }) => {
-  const queryResult = useQuery(GET_CHECKLIST_QUERY);
+  const [userState, setUserState] = useContext(User3Context);
+
+  if (!userState) {
+    return (
+      <View>
+        <Text>Error</Text>
+      </View>
+    );
+  }
+
+  const { id } = userState.user;
+
+  const queryResult = useQuery(GET_CHECKLIST_QUERY, {
+    variables: {
+      userId: id,
+    },
+  });
   return (
     <ScrollView
       contentContainerStyle={styles.container}
@@ -67,8 +84,8 @@ const styles = StyleSheet.create({
 });
 
 const GET_CHECKLIST_QUERY = gql`
-  query GetChecklistItems {
-    checklistItems {
+  query GetChecklistItems($userId: ID!) {
+    checklistItems(where: { employee: { user: { id_eq: $userId } } }) {
       id
       title
       description

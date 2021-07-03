@@ -19,6 +19,7 @@ import { setContext } from "@apollo/client/link/context";
 import { onError } from "@apollo/client/link/error";
 import Tabs from "./navigation/Tabs";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { MenuProvider } from "react-native-popup-menu";
 
 enableScreens();
 
@@ -32,24 +33,25 @@ const Main = () => {
     selectedArticleCategory: "",
   });
 
-  const [user, setUser] = userState;
+  const [userValue, setUserValue] = userState;
 
   const readJwtFromStorage = async () => {
     const _user = await AsyncStorage.getItem("user");
-    setUser(JSON.parse(_user));
+    console.log(JSON.parse(_user));
+    setUserValue(JSON.parse(_user));
   };
 
   // get the authentication token from local storage if it exists
   useEffect(() => {
     readJwtFromStorage();
-    console.log(user);
   }, []);
 
   const authLink = setContext((_, { headers }) => {
     // return the headers to the context so httpLink can read them
     return {
       headers: {
-        authorization: user && user.jwt ? `Bearer ${user.jwt}` : "",
+        authorization:
+          userValue && userValue.jwt ? `Bearer ${userValue.jwt}` : "",
         ...headers,
       },
     };
@@ -68,7 +70,11 @@ const Main = () => {
           // Apollo Server sets code to UNAUTHENTICATED
           // when an AuthenticationError is thrown in a resolver
           case "INTERNAL_SERVER_ERROR":
-            navigationRef.current?.navigate("FirstScreen");
+            //navigationRef.current?.reset();
+            navigationRef.current?.reset({
+              index: 0,
+              routes: [{ name: "FirstScreen" }],
+            });
             break;
           default:
             console.log(
@@ -92,11 +98,13 @@ const Main = () => {
       <User3Context.Provider value={userState}>
         <ArticleContext.Provider value={articleState}>
           <ChatbotContext.Provider value={chatbotState}>
-            <NavigationContainer ref={navigationRef}>
-              <ThemeProvider>
-                <Tabs authenticated={true} />
-              </ThemeProvider>
-            </NavigationContainer>
+            <MenuProvider>
+              <NavigationContainer ref={navigationRef}>
+                <ThemeProvider>
+                  <Tabs authenticated={!!userValue} />
+                </ThemeProvider>
+              </NavigationContainer>
+            </MenuProvider>
           </ChatbotContext.Provider>
         </ArticleContext.Provider>
       </User3Context.Provider>

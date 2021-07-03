@@ -6,7 +6,7 @@ import locale from "dayjs/locale/vi";
 import { ChatbotContext } from "../store";
 import { ActivityIndicator } from "react-native";
 
-export default ChatbotView = () => {
+export default () => {
   const privateKey = process.env.GOOGLE_CLOUD_PRIVATE_KEY;
 
   const serviceAccount =
@@ -16,7 +16,7 @@ export default ChatbotView = () => {
 
   const [messages, setMessages] = useContext(ChatbotContext);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     console.log(privateKey);
     Dialogflow_V2.setConfiguration(

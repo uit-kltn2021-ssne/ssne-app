@@ -40,8 +40,16 @@ const EMPLOYEE_INFORMATION = gql`
 
 export default ({ navigation }) => {
   const [userState, setUser] = useContext(User3Context);
+
+  if (!userState) {
+    return (
+      <View>
+        <Text>Error</Text>
+      </View>
+    );
+  }
+
   const { id, username } = userState.user;
-  console.log(userState);
   const { loading, error, data } = useQuery(EMPLOYEE_INFORMATION, {
     variables: {
       uid: id,

@@ -3,7 +3,7 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput,
+  Linking,
   ActivityIndicator,
   ScrollView,
 } from "react-native";
@@ -11,6 +11,7 @@ import { useQuery, gql } from "@apollo/client";
 import { ListItem, Avatar, Input, Button, Card } from "react-native-elements";
 import { getUrl } from "../constants/Constants";
 import { FontAwesome as Fa } from "@expo/vector-icons";
+import call from 'react-native-phone-call';
 
 const EMPLOYEE_INFORMATION = gql`
   query GetEmployee($uid: ID!) {
@@ -75,16 +76,33 @@ export default ({ route, navigation }) => {
             borderWidth: 1,
           }}
           containerStyle={{ width: 160, height: 160 }}
-          source={{ uri: getUrl(data.employee.avatar.url) }}
+          source={data.employee.avatar ? { uri: getUrl(data.employee.avatar.url) } : null}
         />
       </View>
       <View style={styles.nameSection}>
         <Text style={styles.nameStyle}>{data.employee.name}</Text>
       </View>
       <View style={styles.buttonSection}>
-        <Button title={<Fa name="phone" style={styles.icon} />} />
-        <Button title={<Fa name="comments" style={styles.icon} />} />
-        <Button title={<Fa name="skype" style={styles.icon} />} />
+        <Button title={<Fa name="phone" style={styles.icon} />} onPress={() => {
+          call({
+            number: phoneNumber,
+            prompt: true,
+          })
+        }} />
+        <Button title={<Fa name="comments" style={styles.icon} />} onPress={async () => {
+          const url = "sms:" + phoneNumber;
+          const supported = await Linking.canOpenURL(url);
+          if (supported) {
+            await Linking.openURL(url)
+          }
+        }} />
+        <Button title={<Fa name="skype" style={styles.icon} />} onPress={async () => {
+          const url = "skype:" + skypeId;
+          const supported = await Linking.canOpenURL(url);
+          if (supported) {
+            await Linking.openURL(url)
+          }
+        }} />
       </View>
       <View style={styles.infoSection}>
         <Text style={{ fontSize: 18, fontWeight: "bold", color: "#666" }}>
@@ -122,7 +140,7 @@ export default ({ route, navigation }) => {
               <ListItem.Title style={{ fontWeight: "bold" }}>
                 Phòng ban
               </ListItem.Title>
-              <ListItem.Title>{department.name}</ListItem.Title>
+              <ListItem.Title>{department?.name}</ListItem.Title>
             </ListItem.Content>
           </ListItem>
           <ListItem style={styles.infoItem}>

@@ -67,7 +67,7 @@ export default ({ navigation }) => {
                   borderWidth: 1,
                 }}
                 containerStyle={{ width: 60, height: 60 }}
-                source={{ uri: getUrl(avatar.url) }}
+                source={avatar ? { uri: getUrl(avatar.url) } : null}
               />
               <ListItem.Content>
                 <ListItem.Title style={styles.listItemTitle}>
